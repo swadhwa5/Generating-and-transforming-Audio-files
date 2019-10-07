@@ -2,6 +2,7 @@
 #define IO_H
 
 #include <stdint.h>
+#include <stdio.h>
 
 void fatal_error(const char *message);
 
