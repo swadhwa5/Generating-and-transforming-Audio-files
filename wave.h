@@ -2,11 +2,13 @@
 #define WAVE_H
 
 #include <stdint.h>
+#include <stdio.h>
 
 #define PI                 3.14159265358979323846
 #define SAMPLES_PER_SECOND 44100u
 #define NUM_CHANNELS       2u
 #define BITS_PER_SAMPLE    16u
+#define T_PER_SAMPLE       0.00002268
 
 /* voices */
 #define SINE       0
@@ -18,5 +20,10 @@ void write_wave_header(FILE *out, unsigned num_samples);
 void read_wave_header(FILE *in, unsigned *num_samples);
 
 /* TODO: add declarations for additional functions */
-
+void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude);
+void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude);
+void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude);
+void render_sine_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude);
+void render_square_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude);
+void render_saw_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude);
 #endif /* WAVE_H */

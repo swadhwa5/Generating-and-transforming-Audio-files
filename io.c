@@ -84,7 +84,7 @@ void read_u16(FILE *in, uint16_t *val){
   }
 }
 
-void read_u32(FILE *in, uint32_t *val){ //!!!!!!can u do a|f|c?? 
+void read_u32(FILE *in, uint32_t *val){ 
   char data[4];
   read_bytes(in, data, 4); //read 4 bytes and store in data array in big endian
   uint32_t comb=data[0]+(data[1] * 256)+(data[2] * 65536)+(data[3] * 16777216); //combine all bytes in little endian format
@@ -103,3 +103,5 @@ void read_s16_buf(FILE *in, int16_t buf[], unsigned n){
     read_s16(in, curr);
   }
 }
+
+
