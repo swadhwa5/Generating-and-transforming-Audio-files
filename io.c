@@ -5,8 +5,8 @@
 
 /* TODO: define the functions declared in io.h... */
 void fatal_error(const char *message){
-  fprintf(stderr, "Error: %s", message); //!!!!!do we need the *??? 
-  exit(0);
+  fprintf(stderr, "Error: %s", message); //print msg to stderr
+  exit(1);
 }
 
 void write_byte(FILE *out, char val){
@@ -41,7 +41,7 @@ void write_u32(FILE *out, uint32_t value){
   }
 }
 
-void write_s16(FILE *out, int16_t value){ //!!!!!!!!any difference btw s16 and u16??
+void write_s16(FILE *out, int16_t value){ 
   char lo=value%256;
   char hi=(value/256)%256;
   write_byte(out, lo); //write the least significant byte
@@ -65,7 +65,7 @@ void read_byte(FILE *in, char *val){
   }
 }
 
-void read_bytes(FILE *in, char data[], unsigned n){ //!!!!!!!!!!!!
+void read_bytes(FILE *in, char data[], unsigned n){ 
   for(int i=0; i<(int)n; i++){
     char *currChar=&(data[i]); //creat a currChar pointer that points to the an element of data array
     read_byte(in, currChar); //pass the char pointer to readbyte function
