@@ -124,4 +124,71 @@ void read_wave_header(FILE *in, unsigned *num_samples) {
   *num_samples = Subchunk2Size / NUM_CHANNELS / (BITS_PER_SAMPLE/8u);
 }
 
-/* TODO: add additional functions... */
+
+void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
+                        float freq_hz, float amplitude) {
+
+  if (channel == 0) {//left=0
+
+    double t = 0;                                  
+    for(int i = 0;i<num_samples;i+=2) {
+      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
+      if (p > 0) {
+        buf[i] += amplitude * (32767);//check for additive rendering
+      }
+      else if (p < 0) {
+        buf[i] += amplitude * (-32768);
+      }
+
+      t += T_PER_SAMPLE;
+    }
+  }
+  if (channel == 1) {//right=1
+
+    double t=0;
+  for(int i = 0;i<num_samples;i+=2) {
+      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
+      if (p > 0) {
+        buf[i] += amplitude * (32767);//check for additive rendering
+      }
+      else if (p < 0) {
+        buf[i] += amplitude * (-32768);
+      }
+
+      t	+= T_PER_SAMPLE;   
+    }
+  }
+}
+
+void render_square_wave_stereo(int16_t buf[], unsigned num_samples,
+                               float freq_hz, float amplitude) {
+  render_square_wave(buf, num_samples, 0, freq_hz, amplitude);
+  render_square_wave(buf, num_samples, 1, freq_hz, amplitude);
+}
+
+void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel,
+                        float freq_hz, float amplitude) {
+
+  if (channel == 0) {//left=0                                                                                                                                           
+    double t=0;
+    for(int i = 0;i<num_samples;i+=2) {
+      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
+      buf[i] += p;//check for additive rendering
+      t += T_PER_SAMPLE;   
+    }
+  }
+  if (channel == 1) {//right=1                                                                                                                                         
+    double t=0;                                                           
+    for(int i = 0;i<num_samples;i+=2) {
+      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
+      buf[i] += p;//check for additive rendering
+      t += T_PER_SAMPLE;   
+    }
+  }
+}
+
+void render_sine_wave_stereo(int16_t buf[], unsigned num_samples,
+                               float freq_hz, float amplitude) {
+  render_sine_wave(buf, num_samples, 0, freq_hz, amplitude);
+  render_sine_wave(buf, num_samples, 1, freq_hz, amplitude);
+}
