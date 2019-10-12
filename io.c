@@ -75,28 +75,23 @@ void read_bytes(FILE *in, char data[], unsigned n){
 }
 
 void read_u16(FILE *in, uint16_t *val){
-  char v1=fgetc(in); //least sig
-  char v2=fgetc(in); //most sig
-  if(v1==EOF||v2==EOF){
-    char *message="failed to read byte\n";
-    fatal_error(message);
-  }
-  else{
-    *val = v1 | (v2 << 8); //shift v2 since its more sig then assign comb val to the address
-  }
+  char data[2];//check if it needs to be a poiner
+  read_bytes(in, data, 2); //read 2 bytes and store in data array in little endian format                                                                               
+  uint16_t comb=data[0]+(data[1] * 256);
+  *val = comb; //assign reconstructed unit16 to val  
 }
 
 void read_u32(FILE *in, uint32_t *val){ 
-  char data[4];
+  char data[4];//check if it needs to be a pointer
   read_bytes(in, data, 4); //read 4 bytes and store in data array in big endian
   uint32_t comb=data[0]+(data[1] * 256)+(data[2] * 65536)+(data[3] * 16777216); //combine all bytes in little endian format
-  *val = comb; //assign reconstructed unit32 to the address of val
+  *val = comb; //assign reconstructed unit32 to val
 }
 
 void read_s16(FILE *in, int16_t *val){
-  char data[2];
-  read_bytes(in, data, 2); //read 2 bytes and store in data array in big endian format
-  *val=data[0] + (data[1]*256); //assign comb val to address
+  char data[2];//check if it needs to be a poiner
+  read_bytes(in, data, 2); //read 2 bytes and store in data array in little endian format
+  *val=data[0] + (data[1]*256); //assign reconstructed int16 to val
 }
 
 void read_s16_buf(FILE *in, int16_t buf[], unsigned n){
