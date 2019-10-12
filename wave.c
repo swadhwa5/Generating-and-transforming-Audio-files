@@ -131,13 +131,15 @@ void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
   if (channel == 0) {//left=0
 
     double t = 0;                                  
-    for(int i = 0;i<(int)num_samples;i+=2) {
+    for(int i = 0; i<(int)num_samples; i+=2) {
       double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
-      if (p > 0) {
-        buf[i] += amplitude * (32767);//check for additive rendering
+      if (p >= 0) { //assign max amp if p is non negative
+	int16_t curramp=amplitude*(32767);
+        buf[i] = clampcheck(buf[i], curramp);
       }
-      else if (p < 0) {
-        buf[i] += amplitude * (-32768);
+      else if (p < 0) { //assign min amp if p is negative
+	int16_t curramp=amplitude*(-32767);
+        buf[i] = clampcheck(buf[i], curramp);
       }
 
       t += T_PER_SAMPLE;
@@ -146,15 +148,16 @@ void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
   if (channel == 1) {//right=1
 
     double t=0;
-    for(int i = 1;i<(int)num_samples;i+=2) {
+    for(int i = 1; i<(int)num_samples; i+=2) {
       double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
-      if (p > 0) {
-        buf[i] += amplitude * (32767);//check for additive rendering
+      if (p >= 0) { //if p has a non negative val, assign max amp
+	int16_t curramp=amplitude*(32767);
+        buf[i] = clampcheck(buf[i], curramp);
       }
-      else if (p < 0) {
-        buf[i] += amplitude * (-32768);
+      else if (p < 0) { //if p has negative cal, assign min amp
+	int16_t curramp=amplitude*(-32768);
+        buf[i] = clampcheck(buf[i], curramp);
       }
-
       t	+= T_PER_SAMPLE;   
     }
   }
@@ -173,7 +176,7 @@ void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel,
     double t=0;
     for(int i = 0;i<(int)num_samples;i+=2) {
       double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
-      buf[i] += p;//check for additive rendering
+      buf[i] =clampcheck(buf[i], (int16_t)p);//check for additive rendering then assign val to buf
       t += T_PER_SAMPLE;   
     }
   }
@@ -181,7 +184,7 @@ void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel,
     double t=0;                                                           
     for(int i = 1;i<(int)num_samples;i+=2) {
       double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
-      buf[i] += p;//check for additive rendering
+      buf[i] =clampcheck(buf[i],(int16_t)p);//check for additive rendering then assign val to buf
       t += T_PER_SAMPLE;   
     }
   }
@@ -200,7 +203,8 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
     double t=0;
     for(int i=0; i<(int)num_samples; i+=2){
       double position=t/cycle_length_s; //sample pos in one cycle
-      buf[i]=position*shifted_max_amp-32767; //shift saw down
+      int16_t curramp=position*shifted_max_amp-32767;
+      buf[i]=clampcheck(buf[i], curramp); //add previous & curramp and assign to buf
       t += T_PER_SAMPLE; 
     }
   }
@@ -208,7 +212,8 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
     double t=0;
     for(int i=1; i<(int)num_samples; i+=2){
       double position=t/cycle_length_s; //sample pos in one cycle
-      buf[i]=position*shifted_max_amp-32767; //shift saw down
+      int16_t curramp=position*shifted_max_amp-32767;
+      buf[i]=clampcheck(buf[i], curramp); //add previous & curramp and assign to buf
       t += T_PER_SAMPLE;
     }
   }
@@ -217,4 +222,33 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
 void render_saw_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude){
   render_saw_wave(buf, num_samples, 0, freq_hz, amplitude);
   render_saw_wave(buf, num_samples, 1, freq_hz, amplitude);
+}
+
+int16_t clampcheck(int16_t orig, int16_t add){
+  int32_t sum=orig+add;
+  if(sum>32767){ //exceeds max amp
+    sum=32767; //clamp to max amp
+  }
+  else if(sum<-32768){ //exceeds min amp
+    sum=-32768; //clamp to min amp
+  }
+  return (int16_t)sum; //return sum as 16bit
+}
+
+void render_voice(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude, unsigned voice){
+  //call render wave function according to voice, clampcheck is used in all wave functions
+  if(voice==0){
+    render_sine_wave(buf, num_samples, channel, freq_hz, amplitude);
+  }
+  else if(voice==1){
+    render_square_wave(buf, num_samples, channel, freq_hz, amplitude);
+  }
+  else if(voice==2){
+    render_saw_wave(buf, num_samples, channel, freq_hz, amplitude);
+  }
+}
+
+void render_voice_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude, unsigned voice){
+  render_voice(buf, num_samples, 0, freq_hz, amplitude, voice);
+  render_voice(buf, num_samples, 1, freq_hz, amplitude, voice);
 }
