@@ -75,10 +75,9 @@ void read_bytes(FILE *in, char data[], unsigned n){
 }
 
 void read_u16(FILE *in, uint16_t *val){
-  char data[2];//check if it needs to be a poiner
-  read_bytes(in, data, 2); //read 2 bytes and store in data array in little endian format                                                                               
-  uint16_t comb=data[0]+(data[1] * 256);
-  *val = comb; //assign reconstructed unit16 to val  
+ char data[2];  //check if it needs to be a poiner                                                                                                                
+  read_bytes(in, data, 2); //read 2 bytes and store in data array in little endian format                                                                        
+  *val=data[0] + (data[1]*256); //assign reconstructed int16 to val   
 }
 
 void read_u32(FILE *in, uint32_t *val){ 
