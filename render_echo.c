@@ -3,7 +3,7 @@
 #include "wave.h"
 #include <stdlib.h>
 
-void render_echo(int argc, char **argv) {
+void render_echo(int argc, char** argv) {
 
   int  delay = 0.0;
   float amplitude = 0.0;
