@@ -9,7 +9,7 @@
 #define SAMPLES_PER_SECOND 44100u
 #define NUM_CHANNELS       2u
 #define BITS_PER_SAMPLE    16u
-#define T_PER_SAMPLE       0.00002268
+
 
 /* voices */
 #define SINE       0

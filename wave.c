@@ -130,9 +130,10 @@ void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
 
   if (channel == 0) {//left=0
 
-    double t = 0;                                  
+    float t = 0.0;                                  
     for(int i = 0; i<(int)(num_samples*2); i+=2) {
-      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
+      t = (float)i/SAMPLES_PER_SECOND;
+    float  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
       if (p >= 0) { //assign max amp if p is non negative
 	int16_t curramp=amplitude*(32767);
         buf[i] = clampcheck(buf[i], curramp);
@@ -141,15 +142,15 @@ void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
 	int16_t curramp=amplitude*(-32767);
         buf[i] = clampcheck(buf[i], curramp);
       }
-
-      t += T_PER_SAMPLE;
+  
     }
   }
   if (channel == 1) {//right=1
 
-    double t=0;
+    float t=0.0;
     for(int i = 1; i<(int)(num_samples*2); i+=2) {
-      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
+      t = (float)i/SAMPLES_PER_SECOND;
+      float  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                                                       
       if (p >= 0) { //if p has a non negative val, assign max amp
 	int16_t curramp=amplitude*(32767);
         buf[i] = clampcheck(buf[i], curramp);
@@ -158,7 +159,7 @@ void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
 	int16_t curramp=amplitude*(-32768);
         buf[i] = clampcheck(buf[i], curramp);
       }
-      t	+= T_PER_SAMPLE;   
+         
     }
   }
 }
@@ -173,19 +174,21 @@ void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel,
                         float freq_hz, float amplitude) {
 
   if (channel == 0) {//left=0                                                                                                                                           
-    double t=0;
+    float t=0.0;
     for(int i = 0;i<(int)(num_samples*2);i+=2) {
-      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
+      t = (float)i/SAMPLES_PER_SECOND;
+      float p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
       buf[i] =clampcheck(buf[i], (int16_t)p);//check for additive rendering then assign val to buf
-      t += T_PER_SAMPLE;   
+         
     }
   }
   if (channel == 1) {//right=1                                                                                                                                         
-    double t=0;                                                           
+    float t=0.0;                                                           
     for(int i = 1;i<(int)(num_samples*2);i+=2) {
-      double  p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
+      t = (float)i/SAMPLES_PER_SECOND;
+      float p = amplitude * (32767) * sin((t * freq_hz)* (2 * PI));//check p and t and amplitude                                                                      
       buf[i] =clampcheck(buf[i],(int16_t)p);//check for additive rendering then assign val to buf
-      t += T_PER_SAMPLE;   
+        
     }
   }
 }
@@ -200,21 +203,23 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
   double cycle_length_s=1.0/freq_hz; //length per cycle in seconds
   double shifted_max_amp=amplitude*32767*2; //this value is used to calculate for p before assign neg/pos
   if(channel==0){ //left
-    double t=0;
+    float t=0.0;
     for(int i=0; i<(int)(num_samples*2); i+=2){
-      double position=t/cycle_length_s; //sample pos in one cycle
-      int16_t curramp=position*shifted_max_amp-32767;
+      t = (float)i/SAMPLES_PER_SECOND;
+      float position=t/cycle_length_s; //sample pos in one cycle
+      int16_t curramp= (position - floor(position))*shifted_max_amp-32767;//use floor of position and subtract floor vaue of position from position
       buf[i]=clampcheck(buf[i], curramp); //add previous & curramp and assign to buf
-      t += T_PER_SAMPLE; 
+     
     }
   }
   if(channel==1){ //left
-    double t=0;
+    float t=0.0;
     for(int i=1; i<(int)(num_samples*2); i+=2){
-      double position=t/cycle_length_s; //sample pos in one cycle
-      int16_t curramp=position*shifted_max_amp-32767;
+      t = (float)i/SAMPLES_PER_SECOND;
+      float position=t/cycle_length_s; //sample pos in one cycle
+      int16_t curramp=position*shifted_max_amp-32767;//use floor of position and subtract floor vaue of position from position
       buf[i]=clampcheck(buf[i], curramp); //add previous & curramp and assign to buf
-      t += T_PER_SAMPLE;
+      
     }
   }
 }

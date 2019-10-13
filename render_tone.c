@@ -20,10 +20,10 @@ int main(int argc, char **argv) {
     fatal_error("Error: Couldn't open wavefileout"); 
   }
   
-  int16_t *buf=calloc(num_samples*2, sizeof(int16_t)); //allocate memory for buf with 2*length of samples because stereo
+  int16_t *buf=calloc(num_samples*2u, sizeof(int16_t)); //allocate memory for buf with 2*length of samples because stereo
   render_voice_stereo(buf, num_samples, freq, amp, voice);
   write_wave_header(out, num_samples); //write header
-  write_s16_buf(out, buf, num_samples); //write buf
+  write_s16_buf(out, buf, num_samples*2); //write buf
 
   fclose(out);
   free(buf);
