@@ -10,10 +10,14 @@ void fatal_error(const char *message){
 }
 
 void write_byte(FILE *out, char val){
-  char write=fputc(val, out);
-  //printf("trying to write this value: %c\n", val);
   
-  if(write == EOF) {
+  char write = fputc(val, out);
+  //printf("trying to write this value: %c\n", val);
+  if (val == -1) {
+    return;
+  }
+
+    if(write == EOF) {
     const char *message="failed to write byte\n";
     fatal_error(message);
   
@@ -54,7 +58,6 @@ void write_s16(FILE *out, int16_t value){
 
 void write_s16_buf(FILE *out, const int16_t buf[], unsigned n){
   for(unsigned int i=0; i<n; i++){ //using for loop to write individual int16_t to output
-    printf("i: %d",i);
     //printf("buf value passed is: %d\n", buf[i]);
     write_s16(out, buf[i]);
   }
