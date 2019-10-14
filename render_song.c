@@ -2,8 +2,12 @@
 //default amplitude: 0.1
 //N:Notes,C:chords, P:Pause
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "io.h"
+#include "wave.h"
 
-render_song(int argc, char** argv) {
+int main(int argc, char** argv) {
   if(argc != 3) {
   fatal_error("Malformed Input");
   exit(1);
