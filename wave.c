@@ -204,8 +204,8 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
   double shifted_max_amp=amplitude*32767*2; //this value is used to calculate for p before assign neg/pos
   if(channel==0){ //left
     float t=0.0;
-    for(int i=0; i<(int)(num_samples*2); i+=2){
-      t = (float)i/SAMPLES_PER_SECOND;
+    for(int i=0, j=0; i<(int)(num_samples*2);j++, i+=2){
+      t = (float)j/SAMPLES_PER_SECOND;
       float position=t/cycle_length_s; //sample pos in one cycle
       int16_t curramp= (position - floor(position))*shifted_max_amp-32767;//use floor of position and subtract floor vaue of position from position
       buf[i]=clampcheck(buf[i], curramp); //add previous & curramp and assign to buf
@@ -214,8 +214,8 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
   }
   if(channel==1){ //left
     float t=0.0;
-    for(int i=1; i<(int)(num_samples*2); i+=2){
-      t = (float)i/SAMPLES_PER_SECOND;
+    for(int i=1,j=0; i<(int)(num_samples*2);j++, i+=2){
+      t = (float)j/SAMPLES_PER_SECOND;
       float position=t/cycle_length_s; //sample pos in one cycle
       int16_t curramp= (position- floor(position))*shifted_max_amp-32767;//use floor of position and subtract floor vaue of position from position
       buf[i]=clampcheck(buf[i], curramp); //add previous & curramp and assign to buf
@@ -239,6 +239,9 @@ int16_t clampcheck(int16_t orig, int16_t add){
   }
   return (int16_t)sum; //return sum as 16bit
 }
+
+
+
 
 void render_voice(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude, unsigned voice){
   //call render wave function according to voice, clampcheck is used in all wave functions
