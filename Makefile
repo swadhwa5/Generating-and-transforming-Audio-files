@@ -10,14 +10,16 @@ wave.o: wave.c wave.h
 io.o: io.c io.h
 	$(CC) $(CFLAGS) -c io.c
 
+render_song:render_song.o wave.o io.o
+	$(CC) -o render_tone render_song.o wave.o io.o
+render_song.o: render_song.c wave.c wave.h io.c io.h
+	$(CC) $(CFLAGS) -c render_song.c wave.c io.c
 
-render_song:
-
-
-render_echo:
-
-
+render_echo:render_echo.o wave.o io.o
+        $(CC) -o render_tone render_song.o wave.o io.o
+render_echo.o: render_echo.c wave.c wave.h io.c io.h
+        $(CC) $(CFLAGS) -c render_echo.c wave.c io.c
 
 clean:
-        rm -f *.o render_tone #how to add for render_song and render_echo
+        rm -f *.o render_tone 
 
