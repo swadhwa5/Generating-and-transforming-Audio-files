@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
   float amp=atof(argv[3]);
   unsigned num_samples=atoi(argv[4]);
   FILE *out = fopen(argv[5], "wb");
-  printf("Frequency: %f Number of Samples: %d\n", freq, num_samples);
+
   //handle file error
   if(out == NULL){
     fatal_error("Error: Couldn't open wavefileout"); 

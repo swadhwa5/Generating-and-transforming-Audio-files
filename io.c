@@ -95,8 +95,8 @@ void read_u32(FILE *in, uint32_t *val){
 }
 
 void read_s16(FILE *in, int16_t *val){
-  char data[2];//check if it needs to be a poiner
-  read_bytes(in, data, 2); //read 2 bytes and store in data array in little endian format
+  unsigned char data[2];//check if it needs to be a poiner
+  read_bytes(in, (char *)data, 2); //read 2 bytes and store in data array in little endian format
   *val=data[0] | (data[1] << 8); //assign reconstructed int16 to val
 }
 

@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     int16_t *delay=calloc(final_length, sizeof(int16_t)); //creat array for just the delay part
     int16_t *final=calloc(final_length, sizeof(int16_t)); //creat array to add orig and delay together for the final file
 
-  for(int d=delaysamp, i=0; i<final_length; i++){ //start to fill delay array at index d with the content from orig at index 0 
+  for(int d=delaysamp*2, i=0; i<final_length; i++){ //start to fill delay array at index d with the content from orig at index 0 
     if(d<final_length){
     delay[d]=amplitude*orig[i]; //fill in delay array
     d++;
