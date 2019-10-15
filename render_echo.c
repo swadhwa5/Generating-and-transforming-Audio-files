@@ -19,11 +19,10 @@ int main(int argc, char** argv) {
     delaysamp = atoi(argv[3]);
     amplitude = atof(argv[4]);
     read_wave_header(in,&num_samples); //record num samples
-    fclose(in);
 
     int final_length=num_samples*2+delaysamp*2; 
     int16_t *orig=calloc(final_length, sizeof(int16_t));
-    read_s16_buf(in, orig, num_samples); //create array for original input
+    read_s16_buf(in, orig, num_samples*2); //create array for original input
     int16_t *delay=calloc(final_length, sizeof(int16_t)); //creat array for just the delay part
     int16_t *final=calloc(final_length, sizeof(int16_t)); //creat array to add orig and delay together for the final file
 
@@ -37,8 +36,9 @@ int main(int argc, char** argv) {
 
   FILE *out=fopen(argv[2],"wb"); //write wave file
     write_wave_header(out,num_samples+delaysamp);
-    write_s16_buf(out, final, num_samples+delaysamp);
+    write_s16_buf(out, delay, final_length);
 
+    fclose(in);
     fclose(out);
     free(orig);
     free(delay);

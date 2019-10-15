@@ -12,16 +12,15 @@ void fatal_error(const char *message){
 void write_byte(FILE *out, char val){
   
   char write = fputc(val, out);
-  //printf("trying to write this value: %c\n", val);
-  if (val == -1) {
+  
+  if (val == -1) { //this is to prevent the write that has successfully put down a value of -1 to be confused as eof
     return;
   }
 
-    if(write == EOF) {
+  if(write == EOF) {
     const char *message="failed to write byte\n";
     fatal_error(message);
-  
-      }
+    }
  
 }
 
@@ -65,7 +64,8 @@ void write_s16_buf(FILE *out, const int16_t buf[], unsigned n){
 
 void read_byte(FILE *in, char *val){
   char read=fgetc(in);
-  if(read==EOF){
+ 
+  if(feof(in)){
     const char *message="failed to read byte\n";
     fatal_error(message);
   }
