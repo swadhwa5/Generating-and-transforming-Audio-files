@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
   }
 
   FILE *out=fopen(argv[2],"wb"); //write wave file
-    write_wave_header(out,num_samples+delaysamp);
-    write_s16_buf(out, final, final_length);
+    write_wave_header(out,num_samples);
+    write_s16_buf(out, final, num_samples*2);
 
     fclose(in);
     fclose(out);
