@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-std=c99 -pedantic -Wall -Wextra -g
 
 render_tone: render_tone.o wave.o io.o
-	$(CC) -o render_tone render_tone.o wave.o io.o
+	$(CC) -o render_tone render_tone.o wave.o io.o -lm
 
 render_tone.o: render_tone.c wave.c wave.h io.c io.h
 	$(CC) $(CFLAGS) -c render_tone.c wave.c io.c
@@ -14,7 +14,7 @@ io.o: io.c io.h
 	$(CC) $(CFLAGS) -c io.c
 
 render_song:render_song.o wave.o io.o
-	$(CC) -o render_tone render_song.o wave.o io.o
+	$(CC) -o render_tone render_song.o wave.o io.o -lm
 
 render_song.o: render_song.c wave.c wave.h io.c io.h
 	$(CC) $(CFLAGS) -c render_song.c wave.c io.c
