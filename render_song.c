@@ -9,23 +9,20 @@
 
 int main(int argc, char** argv) {
   if(argc != 3) {
-  fatal_error("Enter appropriate command line arguments");
+  fatal_error("Enter appropriate command line arguments\n");
   exit(1);
   }
 
   unsigned long int num_samples;
   unsigned long int num_samples_per_beat;
   FILE *in = fopen(argv[1],"r");
-  char *message;
   if(in == NULL) {
-    message = "Unable to open input file";
-    fatal_error(message);
+    fatal_error("Unable to open input file\n");
   }
 
   FILE *out = fopen(argv[2],"wb");
   if(out == NULL) {
-    message= "Unable to open output file";
-    fatal_error(mesaage);
+    fatal_error("Unable to open output file\n");
   }
   
   fscanf(in,"%lu%lu",&num_samples,&num_samples_per_beat);
@@ -97,8 +94,8 @@ int main(int argc, char** argv) {
     case 'A':fscanf(in,"%f",&amplitude);
       break;
 
-    default:message = "Wrong Directive";//check for Malformed input
-      fatal_error(message);
+    default: //check for Malformed input
+      fatal_error("Wrong Directive\n");
       
       break;
     }
