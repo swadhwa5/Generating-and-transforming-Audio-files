@@ -16,25 +16,36 @@ int main(int argc, char** argv) {
   unsigned long int num_samples;
   unsigned long int num_samples_per_beat;
   FILE *in = fopen(argv[1],"r");
+  char *message;
+  if(in == NULL) {
+    message = "Unable to open input file";
+    fatal_error(message);
+  }
+
   FILE *out = fopen(argv[2],"wb");
+  if(out == NULL) {
+    message= "Unable to open output file";
+    fatal_error(mesaage);
+  }
+  
   fscanf(in,"%lu%lu",&num_samples,&num_samples_per_beat);
 
 
-  int voice = 0;
-  float amplitude = 0.1;
-  int16_t *data = (int16_t *)calloc(num_samples*2u,sizeof(int16_t));
-  char type;
+  int voice = 0;//default voice
+  float amplitude = 0.1;//default amplitude
+  int16_t *data = (int16_t *)calloc(num_samples*2u,sizeof(int16_t));//buffer to be filled
+  char type;//N or C or P or V or A
 	 
-  float num_beats;
-  float note_number;
-  float new_num_samples;
+  float num_beats;//no of beats for which directive has to be implemented
+  float note_number;//MIDI note number
+  float new_num_samples;// number of samples for which directive has to be implemented
   float freq_hz;
-  char *message;
-  unsigned long int var = 0;
+  
+  unsigned long int var = 0;//counter to keep track of current position
   
   
   
-  while (!feof(in)) {
+  while (!feof(in)) {//checking for end of file
     fscanf(in," %c",&type);
     switch(type) {
 
@@ -50,7 +61,7 @@ int main(int argc, char** argv) {
       render_voice_stereo(&data[var], new_num_samples, freq_hz, amplitude, voice);
 
 
-      var += new_num_samples*2;
+      var += new_num_samples*2;//updating current position in buffer
       
       break;
 
@@ -71,13 +82,13 @@ int main(int argc, char** argv) {
 
 	fscanf(in,"%f",&note_number);
       }
-      var +=new_num_samples*2;
+      var +=new_num_samples*2;//updating current position in buffer
 	break;
 
     case 'P':
       fscanf(in,"%f",&num_beats);
       new_num_samples = num_beats * num_samples_per_beat;
-      var +=new_num_samples*2;
+      var +=new_num_samples*2;//updating current position in buffer
       break;
       
     case 'V':fscanf(in,"%d",&voice);
@@ -86,7 +97,7 @@ int main(int argc, char** argv) {
     case 'A':fscanf(in,"%f",&amplitude);
       break;
 
-    default:message = "Wrong Directive";//check for end of file
+    default:message = "Wrong Directive";//check for Malformed input
       fatal_error(message);
       
       break;
@@ -95,12 +106,13 @@ int main(int argc, char** argv) {
     
   }
 
-  write_wave_header(out, num_samples);
-  write_s16_buf(out, data, num_samples*2u);
+  write_wave_header(out, num_samples);//writing header to output file
+  write_s16_buf(out, data, num_samples*2u);//writing buffer to output file
     
   fclose(in);
   fclose(out);
-  
+  free(data);
+  return 0;
 }
   
 	 
