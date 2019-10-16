@@ -230,7 +230,7 @@ void render_saw_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, 
 }
 
 int16_t clampcheck(int16_t orig, int16_t add){
-  int32_t sum=orig+add;
+  int32_t sum=(int32_t)orig+(int32_t)add;
   if(sum>32767){ //exceeds max amp
     sum=32767; //clamp to max amp
   }
