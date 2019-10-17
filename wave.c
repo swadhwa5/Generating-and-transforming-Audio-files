@@ -126,7 +126,7 @@ void read_wave_header(FILE *in, unsigned *num_samples) {
 
 
 void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
-                        float freq_hz, float amplitude) {
+                        float freq_hz, float amplitude) {//write square wave sample values into buf given the specified parameters of the characteristics
 
   if (channel == 0) {//left=0
 
@@ -165,13 +165,13 @@ void render_square_wave(int16_t buf[], unsigned num_samples, unsigned channel,
 }
 
 void render_square_wave_stereo(int16_t buf[], unsigned num_samples,
-                               float freq_hz, float amplitude) {
+                               float freq_hz, float amplitude) {//render stereo square wave into buf for both channels
   render_square_wave(buf, num_samples, 0, freq_hz, amplitude);//for left channel
   render_square_wave(buf, num_samples, 1, freq_hz, amplitude);//for right channel
 }
 
 void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel,
-                        float freq_hz, float amplitude) {
+                        float freq_hz, float amplitude) {//write sine wave sample values into buf given the specified parameters of the characteristics
 
   if (channel == 0) {//left=0                                                                                                                                           
     float t=0.0;
@@ -194,12 +194,12 @@ void render_sine_wave(int16_t buf[], unsigned num_samples, unsigned channel,
 }
 
 void render_sine_wave_stereo(int16_t buf[], unsigned num_samples,
-                               float freq_hz, float amplitude) {
+			     float freq_hz, float amplitude) {//render stereo sine wave into buf for both channels
   render_sine_wave(buf, num_samples, 0, freq_hz, amplitude);//left channel
   render_sine_wave(buf, num_samples, 1, freq_hz, amplitude);//right channel
 }
 
-void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude){
+void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, float freq_hz, float amplitude){//write saw wave sample values into buf given the specified parameters of the characteristics
   double cycle_length_s=1.0/freq_hz; //length per cycle in seconds
   double shifted_max_amp=amplitude*32767*2; //this value is used to calculate for p before assign neg/pos
   if(channel==0){ //left
@@ -224,12 +224,12 @@ void render_saw_wave(int16_t buf[], unsigned num_samples, unsigned channel, floa
   }
 }
 
-void render_saw_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude){
+void render_saw_wave_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude){//render stereo saw wave into buf for both channels
   render_saw_wave(buf, num_samples, 0, freq_hz, amplitude);//left
   render_saw_wave(buf, num_samples, 1, freq_hz, amplitude);//right 
 }
 
-int16_t clampcheck(int16_t orig, int16_t add){
+int16_t clampcheck(int16_t orig, int16_t add){//add two sample values and clamp them to max or min if necessary, return their sum
   int32_t sum=(int32_t)orig+(int32_t)add;
   if(sum>32767){ //exceeds max amp
     sum=32767; //clamp to max amp
@@ -256,7 +256,7 @@ void render_voice(int16_t buf[], unsigned num_samples, unsigned channel, float f
   }
 }
 
-void render_voice_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude, unsigned voice){
+void render_voice_stereo(int16_t buf[], unsigned num_samples, float freq_hz, float amplitude, unsigned voice){//render stereo wave into buf for both channels, wave type depend on voice
   render_voice(buf, num_samples, 0, freq_hz, amplitude, voice);//left
   render_voice(buf, num_samples, 1, freq_hz, amplitude, voice);//right
 }
