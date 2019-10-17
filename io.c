@@ -48,15 +48,14 @@ void write_u32(FILE *out, uint32_t value){//write a unsigned 32bit value to outp
   }
 }
 
-void write_s16(FILE *out, int16_t value){ //write a signed 16bit value to output file wi\
-th little endian format                    
+void write_s16(FILE *out, int16_t value){ //write a signed 16bit value to output file with little endian format                    
   char lo = value & 0xFF;
   char hi = (value >> 8) & 0xFF;
   write_byte(out, lo); //write the least significant byte
   write_byte(out, hi); //write the more significant byte
 }
 
-void write_s16_buf(FILE *out, const int16_t buf[], unsigned n){//write an array(buf) of signed 16bit value to output file with little endian format                    
+void write_s16_buf(FILE *out, const int16_t buf[], unsigned n){//write an array(buf) of signed 16bit value to output file with little endian format                  
   for(unsigned int i=0; i<n; i++){ //using for loop to write individual int16_t to output
     //printf("buf value passed is: %d\n", buf[i]);
     write_s16(out, buf[i]);
@@ -83,8 +82,8 @@ void read_bytes(FILE *in, char data[], unsigned n){//read n bytes from input fil
 }
 
 void read_u16(FILE *in, uint16_t *val){//read one uint16_t type data from input file and store it in pointer val                               
-unsigned char data[2];  //check if it needs to be a poiner                                                                                                                
- read_bytes(in,(char*) data, 2); //read 2 bytes and store in data array in little endian format                                                                        
+unsigned char data[2];  //check if it needs to be a poiner                                                                                                           
+ read_bytes(in,(char*) data, 2); //read 2 bytes and store in data array in little endian format                                                                      
   *val=data[0] | (data[1] << 8); //assign reconstructed uint16 to val   
 }
 
@@ -95,8 +94,7 @@ void read_u32(FILE *in, uint32_t *val){//read one uint32_t type data from input 
   *val = comb; //assign reconstructed unit32 to val
 }
 
-void read_s16(FILE *in, int16_t *val){//read one int16_t type data from input file and s\
-tore it in pointer val                 
+void read_s16(FILE *in, int16_t *val){//read one int16_t type data from input file and store it in pointer val                 
   unsigned char data[2];//check if it needs to be a poiner
   read_bytes(in, (char *)data, 2); //read 2 bytes and store in data array in little endian format
   *val=data[0] | (data[1] << 8); //assign reconstructed int16 to val
