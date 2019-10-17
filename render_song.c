@@ -10,11 +10,11 @@
 int main(int argc, char** argv) {
   if(argc != 3) {
   fatal_error("Enter appropriate command line arguments\n");
-  exit(1);
+  
   }
 
-  unsigned long int num_samples;
-  unsigned long int num_samples_per_beat;
+  unsigned num_samples;
+  unsigned num_samples_per_beat;
   FILE *in = fopen(argv[1],"r");
   if(in == NULL) {
     fatal_error("Unable to open input file\n");
@@ -25,7 +25,9 @@ int main(int argc, char** argv) {
     fatal_error("Unable to open output file\n");
   }
   
-  fscanf(in,"%lu%lu",&num_samples,&num_samples_per_beat);
+  if(fscanf(in,"%u%u",&num_samples,&num_samples_per_beat) != 2){
+    fatal_error("Malformed input\n");
+  }
 
 
   int voice = 0;//default voice
@@ -38,7 +40,7 @@ int main(int argc, char** argv) {
   float new_num_samples;// number of samples for which directive has to be implemented
   float freq_hz;
   
-  unsigned long int var = 0;//counter to keep track of current position
+  unsigned var = 0;//counter to keep track of current position
   
   
   
