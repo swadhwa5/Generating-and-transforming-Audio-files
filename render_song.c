@@ -45,15 +45,19 @@ int main(int argc, char** argv) {
   
   
   while (!feof(in)) {//checking for end of file
-    fscanf(in," %c",&type);
+    if(fscanf(in," %c",&type) != 1) {
+      free(data);
+      fatal_error("Malformed input\n");//checking input format
+      }
     switch(type) {
 
     case 'N':
       
-      fscanf(in,"%f",&num_beats);
+      if(fscanf(in,"%f",&num_beats) != 1 || fscanf(in,"%f",&note_number) != 1) {
+	free(data);
+	fatal_error("Malformed input\n");//checking input format
+      }
       
-      fscanf(in,"%f",&note_number);
-
       freq_hz = 440*pow(2,((note_number-69) / 12));
       new_num_samples = num_beats * num_samples_per_beat;
  
@@ -67,9 +71,11 @@ int main(int argc, char** argv) {
     case 'C':
 
       
-      fscanf(in,"%f",&num_beats);
+      if(fscanf(in,"%f",&num_beats) != 1 || fscanf(in,"%f",&note_number) != 1){
+	free(data);
+        fatal_error("Malformed input\n");//checking input format                                                                                                       
+      }
       
-      fscanf(in,"%f",&note_number);
       while(note_number != 999) {
 	
 
@@ -79,25 +85,37 @@ int main(int argc, char** argv) {
 	render_voice_stereo(&data[var], new_num_samples, freq_hz, amplitude, voice);
 
 
-	fscanf(in,"%f",&note_number);
+	if(fscanf(in,"%f",&note_number) != 1) {
+	  free(data);
+	  fatal_error("Malformed input\n");//checking input format
+	}
       }
       var +=new_num_samples*2;//updating current position in buffer
 	break;
 
     case 'P':
-      fscanf(in,"%f",&num_beats);
+      if(fscanf(in,"%f",&num_beats) != 1) {
+	free(data);
+	fatal_error("Malformed input\n");//checking input format
+      }
       new_num_samples = num_beats * num_samples_per_beat;
       var +=new_num_samples*2;//updating current position in buffer
       break;
       
-    case 'V':fscanf(in,"%d",&voice);
+    case 'V':if(fscanf(in,"%d",&voice) != 1) {
+	free(data);
+        fatal_error("Malformed input\n");//checking input format                                                                                                                  
+      }
       break;
 
-    case 'A':fscanf(in,"%f",&amplitude);
+    case 'A':if(fscanf(in,"%f",&amplitude) != 1) {
+      free(data);
+      fatal_error("Malformed input\n");//checking input format                                                                                                                   
+      }
       break;
 
     default: //check for Malformed input
-      fatal_error("Wrong Directive\n");
+      fatal_error("Malformed Input\n");
       
       break;
     }
