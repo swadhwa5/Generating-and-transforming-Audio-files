@@ -29,7 +29,9 @@ int main(int argc, char** argv) {
     for(unsigned int d=delaysamp*2, i=0; i<(num_samples-delaysamp)*2; d++,i++){ //start to fill delay array at index d with the content from orig at index 0 
     
     delay[d]=amplitude*orig[i]; //fill in delay array
-  
+    }
+
+    for(unsigned int i = 0; i<num_samples*2; i++){
     
     final[i]=clampcheck(delay[i], orig[i]); //add delay track and orig track to form final track
   }
