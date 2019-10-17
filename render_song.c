@@ -41,18 +41,18 @@ int main(int argc, char** argv) {
   float freq_hz;
   
   unsigned var = 0;//counter to keep track of current position
-  
-  
-  
-  while (!feof(in)) {//checking for end of file
-    if(fscanf(in," %c",&type) != 1) {
+  int check = fscanf(in," %c", &type);//checks for correct directive entry
+  if(check != 1) {
       free(data);
-      fatal_error("Malformed input\n");//checking input format
+      fatal_error("Malformed input\n");//checking input format                                                                                                                     
       }
+  
+  while (check == 1) {//checking for end of file
+
     switch(type) {
 
     case 'N':
-      
+
       if(fscanf(in,"%f",&num_beats) != 1 || fscanf(in,"%f",&note_number) != 1) {
 	free(data);
 	fatal_error("Malformed input\n");//checking input format
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 
     case 'C':
 
-      
+
       if(fscanf(in,"%f",&num_beats) != 1 || fscanf(in,"%f",&note_number) != 1){
 	free(data);
         fatal_error("Malformed input\n");//checking input format                                                                                                       
@@ -94,6 +94,7 @@ int main(int argc, char** argv) {
 	break;
 
     case 'P':
+
       if(fscanf(in,"%f",&num_beats) != 1) {
 	free(data);
 	fatal_error("Malformed input\n");//checking input format
@@ -102,13 +103,17 @@ int main(int argc, char** argv) {
       var +=new_num_samples*2;//updating current position in buffer
       break;
       
-    case 'V':if(fscanf(in,"%d",&voice) != 1) {
+    case 'V':
+
+      if(fscanf(in,"%d",&voice) != 1) {
 	free(data);
         fatal_error("Malformed input\n");//checking input format                                                                                                                  
       }
       break;
 
-    case 'A':if(fscanf(in,"%f",&amplitude) != 1) {
+    case 'A':
+
+      if(fscanf(in,"%f",&amplitude) != 1) {
       free(data);
       fatal_error("Malformed input\n");//checking input format                                                                                                                   
       }
@@ -119,8 +124,8 @@ int main(int argc, char** argv) {
       
       break;
     }
-   
-    
+
+    check = fscanf(in," %c", &type);//check stores non 1 if reached eof or malformed input
   }
 
   write_wave_header(out, num_samples);//writing header to output file
