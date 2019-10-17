@@ -20,23 +20,23 @@ int main(int argc, char** argv) {
     amplitude = atof(argv[4]);
     read_wave_header(in,&num_samples); //record num samples
 
-    int final_length=num_samples*2+delaysamp*2; 
-    int16_t *orig=calloc(final_length, sizeof(int16_t));
-    read_s16_buf(in, orig, num_samples*2); //create array for original input
-    int16_t *delay=calloc(final_length, sizeof(int16_t)); //creat array for just the delay part
-    int16_t *final=calloc(final_length, sizeof(int16_t)); //creat array to add orig and delay together for the final file
 
-  for(int d=delaysamp*2, i=0; i<final_length; i++){ //start to fill delay array at index d with the content from orig at index 0 
-    if(d<final_length){
+    int16_t *orig=calloc(num_samples*2u, sizeof(int16_t));
+    read_s16_buf(in, orig, num_samples*2u); //create array for original input
+    int16_t *delay=calloc(num_samples*2u, sizeof(int16_t)); //creat array for just the delay part
+    int16_t *final=calloc(num_samples*2u, sizeof(int16_t)); //creat array to add orig and delay together for the final file
+
+    for(unsigned int d=delaysamp*2, i=0; i<(num_samples-delaysamp)*2; d++,i++){ //start to fill delay array at index d with the content from orig at index 0 
+    
     delay[d]=amplitude*orig[i]; //fill in delay array
-    d++;
-    }
+  
+    
     final[i]=clampcheck(delay[i], orig[i]); //add delay track and orig track to form final track
   }
 
   FILE *out=fopen(argv[2],"wb"); //write wave file
     write_wave_header(out,num_samples);
-    write_s16_buf(out, final, num_samples*2);
+    write_s16_buf(out, final, num_samples*2u);
 
     fclose(in);
     fclose(out);
