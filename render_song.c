@@ -10,11 +10,11 @@
 int main(int argc, char** argv) {
   if(argc != 3) {
   fatal_error("Enter appropriate command line arguments\n");
-  exit(1);
+  
   }
 
-  unsigned long int num_samples;
-  unsigned long int num_samples_per_beat;
+  unsigned num_samples;
+  unsigned num_samples_per_beat;
   FILE *in = fopen(argv[1],"r");
   if(in == NULL) {
     fatal_error("Unable to open input file\n");
@@ -25,7 +25,9 @@ int main(int argc, char** argv) {
     fatal_error("Unable to open output file\n");
   }
   
-  fscanf(in,"%lu%lu",&num_samples,&num_samples_per_beat);
+  if(fscanf(in,"%u%u",&num_samples,&num_samples_per_beat) != 2){
+    fatal_error("Malformed input\n");
+  }
 
 
   int voice = 0;//default voice
@@ -38,20 +40,24 @@ int main(int argc, char** argv) {
   float new_num_samples;// number of samples for which directive has to be implemented
   float freq_hz;
   
-  unsigned long int var = 0;//counter to keep track of current position
+  unsigned var = 0;//counter to keep track of current position
+  int check = fscanf(in," %c", &type);//checks for correct directive entry
+  if(check != 1) {
+      free(data);
+      fatal_error("Malformed input\n");//checking input format                                                                                                                     
+      }
   
-  
-  
-  while (!feof(in)) {//checking for end of file
-    fscanf(in," %c",&type);
+  while (check == 1) {//checking for end of file
+
     switch(type) {
 
     case 'N':
-      
-      fscanf(in,"%f",&num_beats);
-      
-      fscanf(in,"%f",&note_number);
 
+      if(fscanf(in,"%f",&num_beats) != 1 || fscanf(in,"%f",&note_number) != 1) {
+	free(data);
+	fatal_error("Malformed input\n");//checking input format
+      }
+      
       freq_hz = 440*pow(2,((note_number-69) / 12));
       new_num_samples = num_beats * num_samples_per_beat;
  
@@ -64,10 +70,12 @@ int main(int argc, char** argv) {
 
     case 'C':
 
+
+      if(fscanf(in,"%f",&num_beats) != 1 || fscanf(in,"%f",&note_number) != 1){
+	free(data);
+        fatal_error("Malformed input\n");//checking input format                                                                                                       
+      }
       
-      fscanf(in,"%f",&num_beats);
-      
-      fscanf(in,"%f",&note_number);
       while(note_number != 999) {
 	
 
@@ -77,30 +85,47 @@ int main(int argc, char** argv) {
 	render_voice_stereo(&data[var], new_num_samples, freq_hz, amplitude, voice);
 
 
-	fscanf(in,"%f",&note_number);
+	if(fscanf(in,"%f",&note_number) != 1) {
+	  free(data);
+	  fatal_error("Malformed input\n");//checking input format
+	}
       }
       var +=new_num_samples*2;//updating current position in buffer
 	break;
 
     case 'P':
-      fscanf(in,"%f",&num_beats);
+
+      if(fscanf(in,"%f",&num_beats) != 1) {
+	free(data);
+	fatal_error("Malformed input\n");//checking input format
+      }
       new_num_samples = num_beats * num_samples_per_beat;
       var +=new_num_samples*2;//updating current position in buffer
       break;
       
-    case 'V':fscanf(in,"%d",&voice);
+    case 'V':
+
+      if(fscanf(in,"%d",&voice) != 1) {
+	free(data);
+        fatal_error("Malformed input\n");//checking input format                                                                                                                  
+      }
       break;
 
-    case 'A':fscanf(in,"%f",&amplitude);
+    case 'A':
+
+      if(fscanf(in,"%f",&amplitude) != 1) {
+      free(data);
+      fatal_error("Malformed input\n");//checking input format                                                                                                                   
+      }
       break;
 
     default: //check for Malformed input
-      fatal_error("Wrong Directive\n");
+      fatal_error("Malformed Input\n");
       
       break;
     }
-   
-    
+
+    check = fscanf(in," %c", &type);//check stores non 1 if reached eof or malformed input
   }
 
   write_wave_header(out, num_samples);//writing header to output file
